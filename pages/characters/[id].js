@@ -2,6 +2,7 @@ import { useState } from "react";
 import Card from "../../components/Card";
 import Layout from "../../components/Layout";
 import useSWR from "swr";
+import { useRouter } from "next/router";
 
 const URL = "https://swapi.dev/api/people/";
 
@@ -20,12 +21,17 @@ const fetcher = async (url) => {
 };
 
 export default function Character() {
-  const [id, setId] = useState(1);
+  const router = useRouter();
+  const { id } = router.query;
 
   const { data, error, isLoading } = useSWR(URL + id, fetcher);
 
   if (error) {
-    return <Layout>{error}</Layout>;
+    return (
+      <Layout>
+        {error.status}:{error.info}
+      </Layout>
+    );
   }
 
   if (isLoading) {
